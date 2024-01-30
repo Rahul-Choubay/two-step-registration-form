@@ -23,37 +23,38 @@ const Step2Form = ({ onSubmit }) => {
   };
 
   return (
+    <div style={{ width: "98vw",height:"70vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid item xs={0}>
           <Controller
             name="address"
             control={control}
             render={({ field }) => <TextField label="Address" {...field} />}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={0}>
           <Controller
             name="state"
             control={control}
             render={({ field }) => <TextField label="State" {...field} />}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={0}>
           <Controller
             name="city"
             control={control}
             render={({ field }) => <TextField label="City" {...field} />}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={0}>
           <Controller
             name="country"
             control={control}
             render={({ field }) => <TextField label="Country" {...field} />}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={0}>
           <Controller
             name="pincode"
             control={control}
@@ -69,8 +70,9 @@ const Step2Form = ({ onSubmit }) => {
           />
         </Grid>
       </Grid>
-      <Button type="submit">Submit</Button>
+      <Button  style={{width:'14vw',height:"6vh",marginTop:"6rem", flexDirection: 'row',backgroundColor: "#f0f0f0", justifyContent: "center", alignItems: "center" }} type="submit">Submit</Button>
     </form>
+    </div>
   );
 };
 

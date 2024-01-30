@@ -4,6 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 
 import { Button, TextField, Select, MenuItem, FormControl, InputLabel, Grid } from '@material-ui/core';
+import { error } from 'jquery';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('Name is required').min(3, 'Name should be at least 3 characters'),
@@ -11,12 +12,20 @@ const schema = Yup.object().shape({
   sex: Yup.string().required('Sex is required').oneOf(['Male', 'Female'], 'Invalid sex'),
   mobile: Yup.string().matches(/^(\+\d{1,2}\s?)?\d{10}$/, 'Invalid mobile number').required('Mobile is required'),
   govtIdType: Yup.string().oneOf(['Aadhar', 'PAN'], 'Invalid government ID type'),
-  govtId: Yup.string().when('govtIdType', {
-    is: 'Aadhar',
-    then: Yup.string().required('Aadhar ID is required').matches(/^\d{12}$/, 'Invalid Aadhar ID'),
-    otherwise: Yup.string(),
+  govtId: Yup.string().test({
+    test: function(value) {
+      if (this.parent.govtIdType === 'Aadhar') {
+        return /^\d{12}$/.test(value);
+      } else if (this.parent.govtIdType === 'PAN') {
+        return /^[A-Za-z0-9]{10}$/.test(value);
+      }
+      return true;
+    },
+    message: 'Invalid government ID',
   }),
+  
 });
+
 
 const Step1Form = ({ onNext }) => {
   const { control, handleSubmit } = useForm({
@@ -31,9 +40,12 @@ const Step1Form = ({ onNext }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+    <div style={{ width: "98vw",height:"70vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+  
+    <form onSubmit={handleSubmit(handleFormSubmit)} style={{display:"flex", flexDirection:"column"}}>
+   <div style={{display:"flex", flexDirection:"row"}} >
+      <Grid container spacing={3} style={{display:"flex", flexDirection:"row"}}>
+        <Grid item xs={0} style={{width:'14vw', flexDirection: 'row'}}>
           <Controller
             name="name"
             control={control}
@@ -42,8 +54,9 @@ const Step1Form = ({ onNext }) => {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={0} style={{ flexDirection: 'row' }}>
           <Controller
+           style={{width:'14vw'}}
             name="age"
             control={control}
             render={({ field, fieldState }) => (
@@ -51,12 +64,12 @@ const Step1Form = ({ onNext }) => {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={0} style={{ flexDirection: 'row' }}>
           <Controller
             name="sex"
             control={control}
             render={({ field, fieldState }) => (
-              <FormControl fullWidth>
+              <FormControl  style={{width:'14vw'}}>
                 <InputLabel id="sex-label">Sex</InputLabel>
                 <Select labelId="sex-label" {...field} error={!!fieldState?.error}>
                   <MenuItem value="Male">Male</MenuItem>
@@ -66,7 +79,7 @@ const Step1Form = ({ onNext }) => {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={0} style={{ flexDirection: 'row' }}>
           <Controller
             name="mobile"
             control={control}
@@ -75,12 +88,12 @@ const Step1Form = ({ onNext }) => {
             )}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={0} style={{ flexDirection: 'row' }}>
           <Controller
             name="govtIdType"
             control={control}
             render={({ field }) => (
-              <FormControl fullWidth>
+              <FormControl  style={{width:'14vw'}}>
                 <InputLabel id="govtIdType-label">Govt ID Type</InputLabel>
                 <Select labelId="govtIdType-label" {...field}>
                   <MenuItem value="Aadhar">Aadhar</MenuItem>
@@ -101,9 +114,25 @@ const Step1Form = ({ onNext }) => {
             />
           </Grid>
         )}
+         {
+      govtIdType === 'PAN' && (
+        <Grid item xs={12} >
+          <Controller
+          name='govtId'
+          control={control}
+          render={({field, fieldState}) =>(
+            <TextField label="PAN" {...field} error={!!fieldState?.error} helperText={fieldState?.error?.message} />
+          )}
+          />
+        </Grid>
+      )
+     }
       </Grid>
-      <Button type="submit">Next</Button>
+       </div>
+      <Button style={{width:'14vw',height:"6vh",marginTop:"6rem", flexDirection: 'row',backgroundColor: "#f0f0f0", justifyContent: "center", alignItems: "center" }} type="submit">Next</Button>
+    
     </form>
+    </div>
   );
 };
 
